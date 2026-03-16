@@ -1,18 +1,20 @@
 #include <iostream>
 #include <string>
 using namespace std;
-#define studentNUM 50
+int studentNUM = 2;
+int count=0;
+#define num_student 50
 #define size 10
-#define cap 20
-#define number 3
+#define num_courses 20
+#define num_admin 3
 struct STUDENT {
     int studentID;
     string studentName;
-    string studentPassword;
+    int studentPassword;
     int studentLevel;
     int registeredCOURSES[size]; // ERINY'S PART
     int num_registeredCOURSES = 0;        // ERINY'S PART
-}student[studentNUM];
+}student[num_student];
 struct COURSE{
 int ID;
 string Course_name;
@@ -21,21 +23,21 @@ int Max_Capacity=0;
 int Current_enrolled=0;
 string day;
 int time;
-}course[cap];
+}course[num_courses];
 struct ADMIN {
     int adminID;
     string adminName;
-   string adminPassword;
-}admin[number];
+  int adminPassword;
+}admin[num_admin];
 void student_initializer() {
-  STUDENT stud[studentNUM]={
-    {2024567,"AYA AHMED","aya2007",1,7,4},
-    {2029876,"HABIBA ELSAYED","habiba1234",2,6,3}
+  STUDENT stud[num_student]={
+    {2024567,"AYA AHMED",1234,1,7,4},
+    {2029876,"HABIBA ELSAYED",4321,2,6,3}
  };
 }
 void admin_initializer() {
-ADMIN admin[number]={
-  {2029345,"MAHMOUD","mah@123"},{2345609,"AHMED","ah2345"}
+ADMIN admin[num_admin]={
+  {2029345,"MAHMOUD",1111},{2345609,"AHMED",2222}
  };
 }
 int userCHOICE(){
@@ -89,7 +91,7 @@ void studentLogin(){
         cout << "Login Failed!" << endl << "Incorrect Data." << endl;
 };
 void studentSignUp(){
-    if (studentNUM != studentNUM) {
+    if (studentNUM != num_student) {
         cout << "Enter your name: ";
         cin.ignore();
         getline(cin, student[studentNUM].studentName);
@@ -110,24 +112,29 @@ void studentSignUp(){
         cout << "Sorry! Maximum student capacity reached." << endl;
 };
 void available_courses(){
-  if(course[cap].Current_enrolled< course[cap].Max_Capacity){
+
+  //if(course[num_courses].Current_enrolled< course[num_courses].Max_Capacity){
     cout<<"Physics\n"<<"English\n"<<"ALGORITHM\n"<<"Artificial Intelligence\n"<<"Linear algebra\n"<<"Business";
   }
-}
+//}
 int Registerd_Courses(){
-  int count=0;
+  int id;
   cout<<"Enter id of the course: ";
-  cin>>course[cap].ID;
-    cin>>course[cap].Max_Capacity;
-  if(course[cap].Current_enrolled< course[cap].Max_Capacity){
-  course[cap].Current_enrolled++;
-  student[studentNUM].registeredCOURSES[count]=course[cap].Current_enrolled;
-  count++;
+  cin>>id;
+  if(id<0||id>num_courses){
+    cout<<"INVALID ID! Sorry you can't register\n";
+    return 0;
+  }
+    //cin>>course[num_courses].Max_Capacity;
+  if(course[id].Current_enrolled< course[id].Max_Capacity){
+  course[id].Current_enrolled++;
+   student[studentNUM].registeredCOURSES[count]=id;
+ count++;
   cout<<"Registeration Successfully ";
   }else{
     cout<<"Sorry! Course is full\n";
   }
-  return course[cap].Current_enrolled ;
+  return course[id].Current_enrolled ;
 }
 void adminLogin(){
    int id, password;
@@ -140,7 +147,7 @@ void adminLogin(){
     cout << endl;
     bool data = false;
     int index = -1;
-    for (int i = 0; i < number; i++) {
+    for (int i = 0; i < num_admin; i++) {
         if (admin[i].adminID == id && admin[i].adminPassword == password) {
          data = true;
             index = i;
