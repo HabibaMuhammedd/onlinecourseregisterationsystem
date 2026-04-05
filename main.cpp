@@ -1,12 +1,14 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 int studentNUM = 2;
 int count=0;
 int courseNUM=7;
 #define num_student 50
 #define size 10
-#define num_courses 20
+const int max_courses= 20;
+int num_courses=0;
 #define num_admin 3
 struct STUDENT {
     int studentID;
@@ -14,7 +16,7 @@ struct STUDENT {
     int studentPassword;
     int studentLevel;
     int registeredCOURSES[size]; // ERINY'S PART
-    int num_registeredCOURSES = 0;
+    int num_registeredCOURSES ;
           // ERINY'S PART
 }student[num_student];
 struct COURSE{
@@ -25,7 +27,7 @@ int Max_Capacity=0;
 int Current_enrolled=0;
 string day;
 int time;
-}course[num_courses];
+}course[max_courses];
 struct ADMIN {
     int adminID;
     string adminName;
@@ -36,12 +38,13 @@ int signUP_OR_logIN();
 void student_initializer();
 void course_initializer();
 void admin_initializer();
-void studentLogin();
+bool studentLogin();
 void studentSignUp();
 void available_courses();
 int Registerd_Courses();
 void adminLogin();
-
+void savecourses();
+void loadcourses();
 int main() {
     student_initializer();
    course_initializer();
@@ -50,12 +53,18 @@ int main() {
     if (USERchoice == 1) {
         int signORlog = signUP_OR_logIN();
         if (signORlog == 1) {
-            studentLogin();
+           if(studentLogin()) {
             available_courses();
+            loadcourses();
             Registerd_Courses();
+        savecourses();}
         }
         else if (signORlog == 2) {
             studentSignUp();
+             available_courses();
+             loadcourses();
+            Registerd_Courses();
+            savecourses();
         }
     }
     else if (USERchoice == 2) {
@@ -112,7 +121,7 @@ int signUP_OR_logIN(){
     cout << endl;
     return choice;
 };
-void studentLogin(){
+bool studentLogin(){
     int id, password;
     cout << "Enter ID: ";
     cin >> id;
@@ -132,10 +141,12 @@ void studentLogin(){
     if (data == true) {
         cout << "Login Successful!" << endl;
         cout << "Welcome, " << student[index].studentName << ".\n\n\n" << endl;
+        return true;
         // TO ERINY you should display the menu of that student if the data entered is correct
     }
     if (data == false)
         cout << "Login Failed!" << endl << "Incorrect Data." << endl;
+      return false;
 };
 void studentSignUp(){
     if (studentNUM != num_student) {
@@ -166,6 +177,14 @@ void available_courses(){
              << " - " << course[i].Course_name << endl;
     }
 };
+void loadcourses(){
+    ifstream file("courses.txt");
+    int i=0;
+    while(i<num_courses && file>>course[i].ID>>course[i].Course_name>>course[i].Current_enrolled>>course[i].Max_Capacity){
+        i++;
+    } num_courses=i;
+    file.close();
+}
 int Registerd_Courses(){
     int registeredcount=0;
   int id;
@@ -186,8 +205,8 @@ int Registerd_Courses(){
   if(course[index].Current_enrolled < course[index].Max_Capacity){
     course[index].Current_enrolled++;
 
-    student[studentNUM].registeredCOURSES[registeredcount] = id;
-    registeredcount++;
+   student[studentNUM].registeredCOURSES[student[studentNUM].num_registeredCOURSES] = id;
+student[studentNUM].num_registeredCOURSES++;
 
     cout<<"Registration Successfully\n";
   }
@@ -196,6 +215,16 @@ int Registerd_Courses(){
   }
 
   return course[index].Current_enrolled;
+}
+void savecourses(){
+    ofstream file("courses.txt");
+    for(int i=0;i<num_courses;i++){
+        file<<course[i].ID<<" " 
+        <<course[i].Course_name<<" "
+        <<course[i].Current_enrolled<<" "
+         <<course[i].Max_Capacity<<endl;
+
+    }file.close();
 }
 void adminLogin(){
    int id, password;
